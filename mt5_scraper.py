@@ -1,6 +1,4 @@
 # import libraries
-from typing import Type
-
 import MetaTrader5 as mt5
 import pandas as pd
 import os
@@ -9,6 +7,7 @@ import os
 from anytree import Node, RenderTree
 from datetime import datetime
 from tqdm import tqdm
+from typing import Type
 
 
 class MT5Scraper:
@@ -180,14 +179,14 @@ class MT5Scraper:
         self._disconnect()
         return symbol_count
 
-    def get_historical_data(self, symbol_list: list, timeframe: mt5.TIMEFRAME_D1, start_date: datetime.datetime,
-                            end_date: datetime.datetime, save: bool = False, save_path: str = None) -> dict:
+    def get_historical_data(self, symbol_list: list, timeframe: mt5.TIMEFRAME_D1, start_date: datetime,
+                            end_date: datetime, save: bool = False, save_path: str = None) -> dict:
         """
         Get the historical data from the MetaTrader 5 terminal
         :param symbol_list: list: list of the symbols
         :param timeframe: mt5.TIMEFRAME_XXX: timeframe of the data
-        :param start_date: datetime.datetime: start date of the data
-        :param end_date: datetime.datetime: end date of the data
+        :param start_date: datetime: start date of the data
+        :param end_date: datetime: end date of the data
         :param save: bool: if True, save the data to a csv file
         :param save_path: str: path to the folder where the data should be saved
         :return: dict: dict containing the dataframes
