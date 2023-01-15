@@ -1,11 +1,13 @@
+<a name="readme-top"></a>
+
+<div align="center">
+  
 [![Contributors][contributors-shield]][contributors-url]
 [![Forks][forks-shield]][forks-url]
 [![Stargazers][stars-shield]][stars-url]
 [![Issues][issues-shield]][issues-url]
 [![MIT License][license-shield]][license-url]
 [![LinkedIn][linkedin-shield]][linkedin-url]
-
-<div align="center">
 
 <h3 align="center">MT5Scraper</h3>
 
@@ -57,7 +59,7 @@ In order to work with the MT5Scraper class, it is necessary that MetaTrader 5 is
    todo
    ```
 3. todo
-   ```js
+   ```py
    todo
    ```
 
@@ -68,7 +70,72 @@ In order to work with the MT5Scraper class, it is necessary that MetaTrader 5 is
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-todo
+### Import Module
+Import the class MT5Scraper from the library mt5_scraper
+Import datetime, because start and end date must be type datetime.datetime
+Import MetaTrader 5 because timeframe must be type MetaTrader5.TIMEFRAME.XX
+```py
+from mt5_scraper import MT5Scraper
+from datetime import datetime
+import MetaTrader5 as mt5
+```
+
+
+### Initialize Class
+Make an instance of the class
+
+In total, the following 3 parameters must be passed:
+* login: login to your MT5 account
+* server: server name of the account
+* password: password to the account
+```py
+scraper = MT5Scraper(1234, 'SERVERNAME', 'PASSWORD')
+print(scraper)
+```
+
+
+### Get the total number of symbols
+With the method get_symbol_count you get the number of symbols the account has in total.
+```py
+scraper.get_symbol_count()
+```
+
+
+### Get all symbols
+With the method get_symbols you get a list of all symbols. Additionally the whole structure is displayed as a tree.
+```py
+all_symbols = scraper.get_symbols()
+```
+
+
+### Get specific symbols
+It is possible to pass the following parameters to the method get_symbols:
+* symbol_path: path, to the desired symbols
+* visualize: should the tree structure be output
+```py
+stocks_switzerland = scraper.get_symbols('Stocks\\Switzerland\\Software & IT Services', visualize=True)
+```
+
+
+### Get hystorical data
+with the method get_historical_data you can download the historical prices of the desired symbols. The method has the following parameters:
+* symbol_list: list containing the desired symbols
+* timeframe: desired timeframe (D1, H1, etc.)
+* start_date: prices from
+* end_date: prices until
+* save: True if dataframe should be saved else False
+* save_path: folder Path to save the csv
+```py
+data = scraper.get_historical_data(stocks_switzerland,
+                                   mt5.TIMEFRAME_D1,
+                                   datetime(2005, 1, 1),
+                                   datetime(2023, 1, 11),
+                                   save=True,
+                                   save_path='stocks_switzerland_D1')
+```
+```py
+data['TEMN.S']
+```
 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
