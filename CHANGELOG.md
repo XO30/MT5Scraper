@@ -10,7 +10,7 @@
 - Bugfix
 - Added example.py
 
-## v0.9.2
+## v0.9.3
 ### Added or Changed
 - Made module installable
 - Added README.md
