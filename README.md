@@ -50,18 +50,15 @@ In order to work with the MT5Scraper class, it is necessary that MetaTrader 5 is
 
 ### Installation
 
-1. todo
+
+
+MetaTrader5 provides a lot of binary wheels but only for w32 and w64. No Linux, no MacOS and no source code. Accordingly, the installation is only possible under Windows.
+
+Install the module with pip
    ```sh
-   todo
+   pip3 install git+https://github.com/XO30/MT5Scraper@developement
    ```
-2. todo
-   ```sh
-   todo
-   ```
-3. todo
-   ```py
-   todo
-   ```
+
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
