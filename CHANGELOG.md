@@ -20,4 +20,3 @@
 ### Added or Changed
 - Fixed installation bug in setup.py (added specific version of numpy)
 - Added classifiers to setup.py
-- Added version to mt5_scraper.py
