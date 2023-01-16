@@ -1,4 +1,7 @@
 
+# version
+__version__ = '0.9.4'
+
 # import libraries
 import MetaTrader5 as mt5
 import pandas as pd
