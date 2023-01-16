@@ -56,7 +56,7 @@ MetaTrader5 provides a lot of binary wheels but only for w32 and w64. No Linux, 
 
 Install the module with pip
    ```sh
-   pip3 install git+https://github.com/XO30/MT5Scraper@developement
+   pip3 install git+https://github.com/XO30/MT5Scraper
    ```
 
 
