@@ -1,11 +1,10 @@
 # import
 from setuptools import setup
-from mt5_scraper import __version__
 
 # setup
 setup(
     name='mt5_scraper',
-    version=__version__,
+    version='0.9.4',
     url='https://github.com/XO30/MT5Scraper',
     author='Stefan Siegler',
     author_email='dev@siegler.one',
