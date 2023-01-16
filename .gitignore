@@ -130,6 +130,7 @@ dmypy.json
 
 # idea
 .idea/
+.idea
 
 # egg-info
 mt5_scraper.egg-info/
