@@ -9,7 +9,7 @@
 [![MIT License][license-shield]][license-url]
 [![LinkedIn][linkedin-shield]][linkedin-url]
 
-<h3 align="center">MT5Scraper</h3>
+<h3 align="center">MT5Scraper V0.9.5</h3>
 
   <p align="center">
     Scraper to easily extract historical forex, stock, ect. prices from MetaTrader5 with Python 
@@ -52,7 +52,7 @@ In order to work with the MT5Scraper class, it is necessary that MetaTrader 5 is
 
 
 
-MetaTrader5 provides a lot of binary wheels but only for w32 and w64. No Linux, no MacOS and no source code. Accordingly, the installation is only possible under Windows.
+MetaTrader5 provides a lot of binary wheels but only for w32 and w64. No Linux, no MacOS and no source code. Accordingly, as MT5Scraper requires MetaTrader5, the installation is only possible under Windows.
 
 Install the module with pip
    ```sh
@@ -69,12 +69,8 @@ Install the module with pip
 
 ### Import Module
 Import the class MT5Scraper from the library mt5_scraper
-Import datetime, because start and end date must be type datetime.datetime
-Import MetaTrader 5 because timeframe must be type MetaTrader5.TIMEFRAME.XX
 ```py
 from mt5_scraper import MT5Scraper
-from datetime import datetime
-import MetaTrader5 as mt5
 ```
 
 
@@ -110,23 +106,25 @@ It is possible to pass the following parameters to the method get_symbols:
 * symbol_path: path, to the desired symbols
 * visualize: should the tree structure be output
 ```py
-stocks_switzerland = scraper.get_symbols('Stocks\\Switzerland\\Software & IT Services', visualize=True)
+stocks_switzerland = scraper.get_symbols('Stocks/Switzerland/Software & IT Services', visualize=True)
 ```
 
 
-### Get hystorical data
+# Get historical data
 with the method get_historical_data you can download the historical prices of the desired symbols. The method has the following parameters:
 * symbol_list: list containing the desired symbols
 * timeframe: desired timeframe (D1, H1, etc.)
-* start_date: prices from
-* end_date: prices until
+* start_date: prices from (Y, M, D, h, m, s)
+* end_date: prices until (Y, M, D, h, m, s)
 * save: True if dataframe should be saved else False
 * save_path: folder Path to save the csv
+
+In total there are 21 timeframes to choose: M1, M2, M3, M4, M5, M6, M10, M12, M15, M20, M30, H1, H2, H3, H4, H6, H8, H12, D1, W1, MN1
 ```py
 data = scraper.get_historical_data(stocks_switzerland,
-                                   mt5.TIMEFRAME_D1,
-                                   datetime(2005, 1, 1),
-                                   datetime(2023, 1, 11),
+                                   'H1',
+                                   (2022, 1, 1),
+                                   (2023, 1, 11, 13, 0),
                                    save=True,
                                    save_path='stocks_switzerland_D1')
 ```

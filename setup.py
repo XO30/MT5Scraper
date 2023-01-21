@@ -4,7 +4,7 @@ from setuptools import setup
 # setup
 setup(
     name='mt5_scraper',
-    version='0.9.4',
+    version='0.9.5',
     url='https://github.com/XO30/MT5Scraper',
     author='Stefan Siegler',
     author_email='dev@siegler.one',
@@ -24,6 +24,7 @@ setup(
         'pandas',
         'tqdm',
         'MetaTrader5',
+        'pytz',
         'numpy==1.24.0'  # required by MetaTrader5
     ],
     python_requires='>3.5, <4',
