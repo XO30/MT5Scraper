@@ -3,6 +3,7 @@
 import MetaTrader5 as mt5
 import pandas as pd
 import os
+import pytz
 
 # import classes from libraries
 from anytree import Node, RenderTree
@@ -16,6 +17,7 @@ class MT5Scraper:
         self.login = login
         self.server = server
         self.password = password
+        self.timezone = pytz.timezone('Etc/UTC')
 
     def __repr__(self):
         return f'MT5Scraper(login={self.login}, server={self.server})'
@@ -96,6 +98,51 @@ class MT5Scraper:
             symbol_df.to_csv(f'{save_path}/{symbol}.csv', index=False)
         return None
 
+    @staticmethod
+    def _tf_translator(tf: str) -> mt5.TIMEFRAME_D1:
+        """
+        Convert a time frame to a MetaTrader 5 time frame
+        :param tf: str: time frame
+        :return: mt5.TIMEFRAME_D1: MetaTrader 5 time frame
+        """
+        translation = {'M1': mt5.TIMEFRAME_M1,
+                       'M2': mt5.TIMEFRAME_M2,
+                       'M3': mt5.TIMEFRAME_M3,
+                       'M4': mt5.TIMEFRAME_M4,
+                       'M5': mt5.TIMEFRAME_M5,
+                       'M6': mt5.TIMEFRAME_M6,
+                       'M10': mt5.TIMEFRAME_M10,
+                       'M12': mt5.TIMEFRAME_M12,
+                       'M15': mt5.TIMEFRAME_M15,
+                       'M20': mt5.TIMEFRAME_M20,
+                       'M30': mt5.TIMEFRAME_M30,
+                       'H1': mt5.TIMEFRAME_H1,
+                       'H2': mt5.TIMEFRAME_H2,
+                       'H3': mt5.TIMEFRAME_H3,
+                       'H4': mt5.TIMEFRAME_H4,
+                       'H6': mt5.TIMEFRAME_H6,
+                       'H8': mt5.TIMEFRAME_H8,
+                       'H12': mt5.TIMEFRAME_H12,
+                       'D1': mt5.TIMEFRAME_D1,
+                       'W1': mt5.TIMEFRAME_W1,
+                       'MN1': mt5.TIMEFRAME_MN1}
+        if tf not in translation:
+            raise ValueError(f'{tf} is not a valid time frame. it must be one of the following: {list(translation.keys())}')
+        return translation[tf]
+
+    @staticmethod
+    def _path_translator(path: str) -> str:
+        """
+        Convert a path to a MetaTrader 5 path
+        :param path: str: path to symbol
+        :return: str: MetaTrader 5 symbol path
+        """
+        # split the path into a list
+        path_list = path.split('/')
+        # concatenate the path with \\
+        path = '\\'.join(path_list)
+        return path
+
     def _connect(self) -> bool:
         """
         Connect to the MetaTrader 5 terminal
@@ -122,6 +169,22 @@ class MT5Scraper:
                 for item in value:
                     Node(item, parent=node)
         return None
+
+    def _datetime_translator(self, datetime_tuple: tuple) -> datetime:
+        """
+        Convert a datetime tuple to a datetime object
+        :param datetime_tuple: tuple: datetime tuple
+        :return: datetime: datetime object
+        """
+        # len datetime_tuple must be between 3 and 6
+        if len(datetime_tuple) not in range(3, 7):
+            raise ValueError('datetime tuple must be a tuple of min length 3 (Y, M, D) up to 6 (Y, M, D, h, m, s)')
+        # copy the datetime tuple and fill the missing values with 0
+        datetime_list = list(datetime_tuple)
+        for i in range(len(datetime_list), 6):
+            datetime_list.append(0)
+        # convert the datetime list to a datetime object
+        return datetime(*datetime_list, tzinfo=self.timezone)
 
     def visualize_tree(self, tree: dict) -> Type[Node]:
         """
@@ -151,6 +214,9 @@ class MT5Scraper:
         if symbol_path == 'all':
             symbols = symbols_raw
         else:
+            # convert the path to a MetaTrader 5 path if path contains /
+            if '/' in symbol_path:
+                symbol_path = self._path_translator(symbol_path)
             # filter the symbols
             symbols = [symbol for symbol in symbols_raw if symbol_path in symbol.path]
         self._disconnect()
@@ -180,14 +246,14 @@ class MT5Scraper:
         self._disconnect()
         return symbol_count
 
-    def get_historical_data(self, symbol_list: list, timeframe: mt5.TIMEFRAME_D1, start_date: datetime,
-                            end_date: datetime, save: bool = False, save_path: str = None) -> dict:
+    def get_historical_data(self, symbol_list: list, timeframe: str, start_date: tuple,
+                            end_date: tuple, save: bool = False, save_path: str = None) -> dict:
         """
         Get the historical data from the MetaTrader 5 terminal
         :param symbol_list: list: list of the symbols
-        :param timeframe: mt5.TIMEFRAME_XXX: timeframe of the data
-        :param start_date: datetime: start date of the data
-        :param end_date: datetime: end date of the data
+        :param timeframe: str: timeframe of the data
+        :param start_date: tuple: start datetime of the data
+        :param end_date: tuple: end datetime of the data
         :param save: bool: if True, save the data to a csv file
         :param save_path: str: path to the folder where the data should be saved
         :return: dict: dict containing the dataframes
@@ -199,7 +265,10 @@ class MT5Scraper:
         # loop through the symbol list
         for symbol in tqdm(symbol_list):
             # get the symbol data
-            symbol_data = mt5.copy_rates_range(symbol, timeframe, start_date, end_date)
+            symbol_data = mt5.copy_rates_range(symbol,
+                                               self._tf_translator(timeframe),
+                                               self._datetime_translator(start_date),
+                                               self._datetime_translator(end_date))
             # append the data to the dictionary
             symbol_df = pd.DataFrame(symbol_data)
             symbol_df['time'] = pd.to_datetime(symbol_df['time'], unit='s')
