@@ -137,3 +137,4 @@ mt5_scraper.egg-info/
 
 # credentials
 mt5_credentials.txt
+example_private.ipynb
