@@ -137,7 +137,7 @@ class MT5Scraper:
         :param path: str: path to symbol
         :return: str: MetaTrader 5 symbol path
         """
-        # split the path into a list
+        # split the path into tokens and add it to a list
         path_list = path.split('/')
         # concatenate the path with \\
         path = '\\'.join(path_list)
