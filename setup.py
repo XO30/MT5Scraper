@@ -25,7 +25,7 @@ setup(
         'tqdm',
         'MetaTrader5',
         'pytz',
-        'numpy==1.24.0'  # required by MetaTrader5
+        'numpy==1.24.0'
     ],
     python_requires='>3.5, <4',
 )
